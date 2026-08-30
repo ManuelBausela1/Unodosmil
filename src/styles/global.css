@@ -1,0 +1,74 @@
+/**
+ * Punto de entrada de estilos. Se importa una sola vez desde `main.jsx`.
+ * Orden: fuentes → tokens → reset → base → utilidades.
+ */
+
+/* Fuentes self-hosted: sin pedidos a terceros, sin FOUT de red, y una CSP
+   más estricta porque no hace falta habilitar dominios de fuentes externos. */
+@import '@fontsource-variable/rubik/wght.css';
+@import '@fontsource/aileron/400.css';
+@import '@fontsource/aileron/700.css';
+/* Itálicas reales para las palabras destacadas de las frases del hero: sin
+   ellas el navegador inclina la redonda a mano y la letra sale deformada. */
+@import '@fontsource/aileron/400-italic.css';
+@import '@fontsource/aileron/700-italic.css';
+
+@import './tokens.css';
+@import './reset.css';
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--color-hueso);
+}
+
+/* ── Utilidades ─────────────────────────────────────────── */
+
+/** Accesible para lectores de pantalla, invisible en pantalla. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/** Salto al contenido: visible sólo cuando recibe foco por teclado. */
+.skip-link {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: var(--z-overlay);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-noche);
+  background-color: var(--color-hueso);
+  border-radius: var(--radius-md);
+  transform: translateY(-200%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}

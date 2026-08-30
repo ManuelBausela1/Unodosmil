@@ -1,0 +1,22 @@
+# Cabeceras de seguridad. Formato Netlify / Cloudflare Pages.
+# Si el hosting es otro (Vercel, nginx, Apache), hay que traducirlas — no van
+# como <meta> en el HTML: `frame-ancestors` y `X-Frame-Options` sólo tienen
+# efecto como cabecera HTTP real.
+
+/*
+  # Nadie embebe el sitio en un iframe: corta clickjacking.
+  X-Frame-Options: DENY
+  # Impide que el navegador "adivine" el tipo de un archivo servido.
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # No usamos cámara, micrófono ni geolocalización: las apagamos explícitamente.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  # El sitio es estático y self-hosted: todo se sirve desde 'self'.
+  # `style-src 'unsafe-inline'` es necesario porque React aplica estilos inline
+  # (los keyframes generados del corredor y las variables --i del claim).
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Los assets con hash en el nombre son inmutables.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

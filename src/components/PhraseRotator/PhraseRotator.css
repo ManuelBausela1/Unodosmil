@@ -1,0 +1,48 @@
+/**
+ * Todas las frases comparten la misma celda del grid, apiladas una sobre otra.
+ * El bloque mide lo que mide la más alta y no salta al rotar.
+ */
+.phrase-rotator {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+/**
+ * La transición vive en el párrafo, no en cada línea: las dos líneas dicen una
+ * sola idea, así que entran juntas, como un bloque.
+ */
+.phrase-rotator__frase {
+  grid-area: 1 / 1;
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--fg);
+  opacity: 0;
+  transform: translateY(0.6rem);
+  filter: blur(6px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out),
+    filter var(--duration-slow) var(--ease-out);
+  /* La frase que sale no debe interceptar el mouse mientras se desvanece. */
+  pointer-events: none;
+}
+
+.phrase-rotator__frase[data-activa='true'] {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+.phrase-rotator__linea {
+  display: block;
+}
+
+.phrase-rotator__destacado {
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-hueso);
+}

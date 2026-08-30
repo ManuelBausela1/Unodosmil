@@ -1,0 +1,309 @@
+.hero {
+  /* 100svh, no 100vh: en móvil la barra del navegador no debe recortar el CTA. */
+  min-height: 100svh;
+  background-color: var(--color-noche-900);
+  isolation: isolate;
+}
+
+/**
+ * Manchas de luz en el petróleo de marca, difuminadas por todo el fondo.
+ *
+ * Son radial-gradients y no `filter: blur()`: un degradado radial ya nace
+ * suave y lo resuelve el compositor, mientras que desenfocar una capa del
+ * tamaño de la pantalla obliga al navegador a rasterizarla en cada frame.
+ *
+ * Van en `z-index: 0`, por debajo del escenario del corredor, así las fotos
+ * pasan por delante y las manchas quedan como atmósfera y no como una veladura
+ * encima del trabajo.
+ *
+ * Dos capas que derivan en sentidos opuestos y a distinta velocidad: los
+ * períodos (38s y 53s) no son múltiplos entre sí, así que el patrón tarda
+ * muchísimo en repetirse y el fondo nunca se lee como un bucle.
+ */
+.hero__glow {
+  position: absolute;
+  /* Se desborda del hero para que al rotar y escalar nunca asome un borde. */
+  inset: -35%;
+  z-index: 0;
+  pointer-events: none;
+  /**
+   * Capa de luz. La caída corta —`transparent` al 45% en vez del 70%— es lo que
+   * arma la onda: los degradados se cortan entre sí en un frente definido en
+   * lugar de desvanecerse todos juntos en una nube.
+   */
+  background:
+    radial-gradient(at 18% 16%, rgb(22 162 189 / 0.85) 0px, transparent 45%),
+    radial-gradient(at 80% 10%, rgb(9 107 128 / 0.9) 0px, transparent 43%),
+    radial-gradient(at 96% 54%, rgb(22 162 189 / 0.7) 0px, transparent 42%),
+    radial-gradient(at 30% 88%, rgb(9 107 128 / 0.9) 0px, transparent 45%),
+    radial-gradient(at 62% 66%, rgb(10 125 149 / 0.7) 0px, transparent 40%);
+  animation: hero-mesh-a 34s var(--ease-in-out) infinite alternate;
+}
+
+/**
+ * Franjas. Son elipses muy achatadas —70% de ancho por 11% de alto— así que en
+ * vez de manchas redondas dan trazos largos. Inclinadas y superpuestas a la
+ * malla, es lo que se lee como líneas de onda cruzando el fondo.
+ */
+.hero__glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 72% 11% at 28% 26%, rgb(22 162 189 / 0.6) 0%, transparent 62%),
+    radial-gradient(ellipse 64% 9% at 72% 48%, rgb(22 162 189 / 0.5) 0%, transparent 62%),
+    radial-gradient(ellipse 80% 10% at 44% 74%, rgb(10 125 149 / 0.55) 0%, transparent 62%),
+    radial-gradient(ellipse 56% 8% at 84% 90%, rgb(22 162 189 / 0.42) 0%, transparent 62%);
+  animation: hero-mesh-c 41s var(--ease-in-out) infinite alternate;
+}
+
+/**
+ * Capa de sombra, encima de la de luz y girando al revés. No agrega color:
+ * *recorta* el de abajo. Ese borde entre lo que tapa y lo que deja pasar es la
+ * cresta de la onda, y como las dos capas giran en sentidos opuestos, la cresta
+ * viaja.
+ */
+.hero__glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(at 50% 38%, rgb(1 14 29 / 0.97) 0px, transparent 40%),
+    radial-gradient(at 8% 66%, rgb(1 14 29 / 0.94) 0px, transparent 36%),
+    radial-gradient(at 92% 86%, rgb(1 14 29 / 0.95) 0px, transparent 38%),
+    radial-gradient(at 70% 4%, rgb(1 14 29 / 0.9) 0px, transparent 34%);
+  animation: hero-mesh-b 47s var(--ease-in-out) infinite alternate;
+}
+
+/**
+ * Las dos capas rotan en sentidos opuestos. La rotación es lo que hace que los
+ * frentes se crucen y las ondas parezcan fluir; con sólo desplazarlas la
+ * composición se corre entera pero el dibujo no cambia.
+ *
+ * Los períodos (34s y 47s) no son múltiplos entre sí, así que el patrón
+ * combinado tarda muchísimo en repetirse.
+ */
+@keyframes hero-mesh-a {
+  from {
+    transform: rotate(-7deg) scale(1) translate3d(-2%, -1%, 0);
+  }
+  to {
+    transform: rotate(6deg) scale(1.15) translate3d(3%, 2%, 0);
+  }
+}
+
+@keyframes hero-mesh-b {
+  from {
+    transform: rotate(5deg) scale(1.12) translate3d(2%, 2%, 0);
+  }
+  to {
+    transform: rotate(-8deg) scale(1) translate3d(-3%, -2%, 0);
+  }
+}
+
+/* Las franjas nacen inclinadas y basculan: es la ondulación del trazo. */
+@keyframes hero-mesh-c {
+  from {
+    transform: rotate(-16deg) translate3d(-3%, 2%, 0);
+  }
+  to {
+    transform: rotate(-4deg) translate3d(3%, -2%, 0);
+  }
+}
+
+/**
+ * Velo de contraste. La regla es: oscurecer sólo donde hay texto encima, y
+ * dejar la franja de fotos limpia — es lo que la agencia está vendiendo.
+ *
+ * Dos capas, apiladas en el orden en que están escritas:
+ * - Radial: una elipse alta, detrás de la marca y nada más.
+ * - Vertical: asienta el borde superior e inferior. El tramo del medio —donde
+ *   pasa la cinta— queda transparente del todo.
+ *
+ * Los laterales van limpios: la malla de ondas ya no es azul noche plano, así
+ * que un velo oscuro en los bordes se veía pegado encima en vez de fundirse.
+ */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 34% 24% at 50% 24%,
+      rgb(1 14 29 / 0.72) 0%,
+      rgb(1 14 29 / 0.34) 55%,
+      rgb(1 14 29 / 0) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(1 14 29 / 0.6) 0%,
+      rgb(1 14 29 / 0) 22%,
+      rgb(1 14 29 / 0) 68%,
+      rgb(1 14 29 / 0.82) 84%,
+      var(--color-noche-900) 96%
+    );
+}
+
+.hero__content {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-height: 100svh;
+  /* El padding superior es más generoso que el inferior a propósito: baja el
+     bloque de marca hasta apoyarlo contra el borde de arriba de la cinta. */
+  padding: clamp(3.5rem, 10vh, 7rem) var(--gutter) clamp(3rem, 7vh, 5rem);
+  text-align: center;
+}
+
+/* ── Marca: logotipo + claim ─────────────────────────────── */
+
+.hero__marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero__title {
+  margin: 0;
+  /* El h1 no lleva texto visible: el logotipo curvo *es* el nombre, y su
+     versión accesible viaja en el alt de la imagen. */
+  line-height: 0;
+}
+
+.hero__logo {
+  width: clamp(15rem, 42vw, 32rem);
+  height: auto;
+  animation: hero-logo-in 1.5s var(--ease-out) both;
+}
+
+@keyframes hero-logo-in {
+  from {
+    opacity: 0;
+    transform: scale(1.16) translateY(1.5rem);
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.hero__claim {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.32em;
+  font-family: var(--font-body);
+  /* Es la frase institucional, así que pesa más que un subtítulo cualquiera.
+     El límite lo pone el logotipo que tiene justo encima: sube de tamaño,
+     pero se queda en gris tenue y con la letra espaciada para no disputarle
+     la jerarquía. */
+  font-size: var(--text-xl);
+  font-weight: 400;
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-snug);
+  color: var(--fg-muted);
+}
+
+/* ── Bloque inferior: frases rotativas + llamada a la acción ── */
+
+.hero__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/**
+ * Cada palabra es una ventana que recorta, y adentro va un span que sube desde
+ * abajo del borde. La palabra no aparece: se descubre.
+ *
+ * El padding/margen compensados le dan aire a la máscara para las colas de la
+ * "j" y la "g" — sin eso el recorte se las come.
+ */
+.hero__claim-word {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
+}
+
+.hero__claim-word-inner {
+  display: inline-block;
+  animation: hero-word-reveal 1.1s var(--ease-out) both;
+  animation-delay: calc(650ms + var(--i) * 150ms);
+}
+
+@keyframes hero-word-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(115%) rotate(3deg);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+.hero__frases {
+  animation: hero-fade-up 900ms var(--ease-out) 1.3s both;
+}
+
+.hero__cta {
+  animation: hero-fade-up 900ms var(--ease-out) 1.55s both;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Móvil ───────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .hero__content {
+    /* La cinta de vertical es más angosta y queda más abajo que la de desktop,
+       así que el logotipo necesita bajar bastante más para apoyarse en ella. */
+    padding-top: clamp(5rem, 22vh, 12rem);
+    padding-bottom: clamp(2.5rem, 6vh, 4rem);
+  }
+
+  /* En vertical la cinta es más alta y angosta: el degradado lateral estorba,
+     y el radial de la marca tiene que subir con ella. */
+  .hero__scrim {
+    background:
+      radial-gradient(
+        ellipse 64% 18% at 50% 25%,
+        rgb(1 14 29 / 0.7) 0%,
+        rgb(1 14 29 / 0.3) 60%,
+        rgb(1 14 29 / 0) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--color-noche-900) 0%,
+        rgb(1 14 29 / 0.45) 12%,
+        rgb(1 14 29 / 0) 28%,
+        rgb(1 14 29 / 0) 62%,
+        rgb(1 14 29 / 0.85) 78%,
+        var(--color-noche-900) 92%
+      );
+  }
+}

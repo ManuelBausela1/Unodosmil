@@ -1,0 +1,77 @@
+.wa-button {
+  --wa-bg: var(--color-hueso);
+  --wa-fg: var(--color-noche);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-title);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--wa-fg);
+  background-color: var(--wa-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out);
+}
+
+/** Variante principal: petróleo de marca, que vira al verde de WhatsApp. */
+.wa-button--primario {
+  --wa-bg: var(--color-petroleo);
+  --wa-fg: var(--color-hueso);
+
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-base);
+}
+
+.wa-button--ghost {
+  --wa-bg: transparent;
+  --wa-fg: var(--color-hueso);
+  border-color: var(--border-strong);
+  backdrop-filter: blur(6px);
+}
+
+.wa-button__glifo {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.wa-button__icon {
+  width: 1.35em;
+  height: 1.35em;
+}
+
+@media (hover: hover) {
+  .wa-button:hover {
+    transform: scale(1.05);
+  }
+
+  .wa-button--primario:hover {
+    --wa-bg: var(--color-whatsapp);
+    --wa-fg: #ffffff;
+  }
+
+  .wa-button--solid:hover {
+    --wa-bg: var(--accent-bright);
+    --wa-fg: var(--color-noche);
+  }
+
+  .wa-button--ghost:hover {
+    --wa-bg: var(--color-hueso);
+    --wa-fg: var(--color-noche);
+    border-color: var(--color-hueso);
+  }
+}
+
+.wa-button:active {
+  transform: scale(0.98);
+}

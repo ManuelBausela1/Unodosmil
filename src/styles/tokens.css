@@ -1,0 +1,87 @@
+/**
+ * Design tokens — única fuente de verdad de la identidad visual.
+ * Ningún componente escribe un color, una fuente o un espaciado a mano.
+ */
+:root {
+  /* ── Marca ─────────────────────────────────────────────── */
+  --color-petroleo: #096b80;
+  --color-noche: #011931;
+  --color-hueso: #eeeeee;
+
+  /* Derivados: escalas construidas sobre los tres colores de marca. */
+  --color-noche-900: #010e1d;
+  --color-noche-800: #011931;
+  --color-noche-700: #04263f;
+  --color-petroleo-600: #0a7d95;
+  --color-petroleo-400: #16a2bd;
+  --color-hueso-dim: #b9c3cd;
+  --color-hueso-soft: #7d8b9a;
+
+  /* Verde de marca de WhatsApp. Es de ellos, no nuestro: se usa sólo en el
+     botón que lleva a WhatsApp, donde funciona como señal reconocible. */
+  --color-whatsapp: #25d366;
+
+  /* ── Roles semánticos ──────────────────────────────────── */
+  --bg: var(--color-noche-900);
+  --bg-elevated: var(--color-noche-700);
+  --fg: var(--color-hueso);
+  --fg-muted: var(--color-hueso-dim);
+  --fg-subtle: var(--color-hueso-soft);
+  --accent: var(--color-petroleo);
+  --accent-bright: var(--color-petroleo-400);
+  --border: rgb(238 238 238 / 0.12);
+  --border-strong: rgb(238 238 238 / 0.24);
+
+  /* ── Tipografía ────────────────────────────────────────── */
+  --font-title: 'Rubik Variable', 'Rubik', system-ui, sans-serif;
+  --font-body: 'Aileron', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.82rem);
+  --text-sm: clamp(0.875rem, 0.84rem + 0.18vw, 0.95rem);
+  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+  --text-lg: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --text-xl: clamp(1.4rem, 1.2rem + 1vw, 2rem);
+  --text-2xl: clamp(1.9rem, 1.4rem + 2.4vw, 3.2rem);
+  --text-3xl: clamp(2.6rem, 1.6rem + 4.6vw, 5.5rem);
+
+  --leading-tight: 1.08;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.08em;
+  --tracking-wider: 0.22em;
+
+  /* ── Espaciado (escala de 4px) ─────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Padding lateral y ancho de lectura, compartidos por todas las secciones. */
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --measure: 68ch;
+  --max-width: 84rem;
+
+  /* ── Forma y movimiento ────────────────────────────────── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 999rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 180ms;
+  --duration-base: 420ms;
+  --duration-slow: 900ms;
+
+  --z-corridor: 1;
+  --z-content: 10;
+  --z-header: 100;
+  --z-overlay: 1000;
+}

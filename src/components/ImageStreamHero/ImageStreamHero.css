@@ -1,0 +1,60 @@
+.image-stream-hero {
+  position: relative;
+  /**
+   * `clip`, no `hidden`. Las cards se salen de cuadro por diseño, y `hidden`
+   * convierte al contenedor en un área scrolleable: alcanza con que algo
+   * adentro reciba foco o se haga scrollIntoView para que el navegador
+   * desplace el hero entero unos píxeles y quede todo descentrado.
+   * `clip` recorta igual pero no crea contenedor de scroll.
+   */
+  overflow: hidden;
+  overflow: clip;
+}
+
+.image-stream-hero__stage {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-corridor);
+  pointer-events: none;
+}
+
+.image-stream-hero__world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.image-stream-hero__card {
+  position: absolute;
+  left: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  /* Placeholder: mientras el navegador decodifica las fotos, la cinta ya tiene
+     su forma. Sin esto el corredor se arma de a pedazos en el primer segundo. */
+  background-color: var(--bg-elevated, #04263f);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* Sin `will-change` a propósito: son ~22 cards con una foto grande cada una,
+     y forzarlas todas a su propia capa hace que el compositor tenga que subir
+     decenas de MB de textura antes del primer frame — el corredor tarda
+     segundos en aparecer. El `translate3d` de los keyframes ya promueve lo que
+     hace falta, cuando hace falta. */
+}
+
+.image-stream-hero__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/**
+ * Pausar en vez de desactivar mantiene el corredor entero: cada card ya fue
+ * soltada a mitad de vuelo por su delay negativo, así que se congela como una
+ * composición terminada en lugar de colapsar sobre el eje.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .image-stream-hero__card {
+    animation-play-state: paused;
+  }
+}
