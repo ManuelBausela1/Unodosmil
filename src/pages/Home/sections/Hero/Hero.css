@@ -1,114 +1,9 @@
 .hero {
   /* 100svh, no 100vh: en móvil la barra del navegador no debe recortar el CTA. */
   min-height: 100svh;
-  background-color: var(--color-noche-900);
+  /* Sin fondo propio: la malla del `AmbientBackground` se ve a través, y así
+     esta sección no se despega de las que vengan abajo. */
   isolation: isolate;
-}
-
-/**
- * Manchas de luz en el petróleo de marca, difuminadas por todo el fondo.
- *
- * Son radial-gradients y no `filter: blur()`: un degradado radial ya nace
- * suave y lo resuelve el compositor, mientras que desenfocar una capa del
- * tamaño de la pantalla obliga al navegador a rasterizarla en cada frame.
- *
- * Van en `z-index: 0`, por debajo del escenario del corredor, así las fotos
- * pasan por delante y las manchas quedan como atmósfera y no como una veladura
- * encima del trabajo.
- *
- * Dos capas que derivan en sentidos opuestos y a distinta velocidad: los
- * períodos (38s y 53s) no son múltiplos entre sí, así que el patrón tarda
- * muchísimo en repetirse y el fondo nunca se lee como un bucle.
- */
-.hero__glow {
-  position: absolute;
-  /* Se desborda del hero para que al rotar y escalar nunca asome un borde. */
-  inset: -35%;
-  z-index: 0;
-  pointer-events: none;
-  /**
-   * Capa de luz. La caída corta —`transparent` al 45% en vez del 70%— es lo que
-   * arma la onda: los degradados se cortan entre sí en un frente definido en
-   * lugar de desvanecerse todos juntos en una nube.
-   */
-  background:
-    radial-gradient(at 18% 16%, rgb(22 162 189 / 0.85) 0px, transparent 45%),
-    radial-gradient(at 80% 10%, rgb(9 107 128 / 0.9) 0px, transparent 43%),
-    radial-gradient(at 96% 54%, rgb(22 162 189 / 0.7) 0px, transparent 42%),
-    radial-gradient(at 30% 88%, rgb(9 107 128 / 0.9) 0px, transparent 45%),
-    radial-gradient(at 62% 66%, rgb(10 125 149 / 0.7) 0px, transparent 40%);
-  animation: hero-mesh-a 34s var(--ease-in-out) infinite alternate;
-}
-
-/**
- * Franjas. Son elipses muy achatadas —70% de ancho por 11% de alto— así que en
- * vez de manchas redondas dan trazos largos. Inclinadas y superpuestas a la
- * malla, es lo que se lee como líneas de onda cruzando el fondo.
- */
-.hero__glow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 72% 11% at 28% 26%, rgb(22 162 189 / 0.6) 0%, transparent 62%),
-    radial-gradient(ellipse 64% 9% at 72% 48%, rgb(22 162 189 / 0.5) 0%, transparent 62%),
-    radial-gradient(ellipse 80% 10% at 44% 74%, rgb(10 125 149 / 0.55) 0%, transparent 62%),
-    radial-gradient(ellipse 56% 8% at 84% 90%, rgb(22 162 189 / 0.42) 0%, transparent 62%);
-  animation: hero-mesh-c 41s var(--ease-in-out) infinite alternate;
-}
-
-/**
- * Capa de sombra, encima de la de luz y girando al revés. No agrega color:
- * *recorta* el de abajo. Ese borde entre lo que tapa y lo que deja pasar es la
- * cresta de la onda, y como las dos capas giran en sentidos opuestos, la cresta
- * viaja.
- */
-.hero__glow::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(at 50% 38%, rgb(1 14 29 / 0.97) 0px, transparent 40%),
-    radial-gradient(at 8% 66%, rgb(1 14 29 / 0.94) 0px, transparent 36%),
-    radial-gradient(at 92% 86%, rgb(1 14 29 / 0.95) 0px, transparent 38%),
-    radial-gradient(at 70% 4%, rgb(1 14 29 / 0.9) 0px, transparent 34%);
-  animation: hero-mesh-b 47s var(--ease-in-out) infinite alternate;
-}
-
-/**
- * Las dos capas rotan en sentidos opuestos. La rotación es lo que hace que los
- * frentes se crucen y las ondas parezcan fluir; con sólo desplazarlas la
- * composición se corre entera pero el dibujo no cambia.
- *
- * Los períodos (34s y 47s) no son múltiplos entre sí, así que el patrón
- * combinado tarda muchísimo en repetirse.
- */
-@keyframes hero-mesh-a {
-  from {
-    transform: rotate(-7deg) scale(1) translate3d(-2%, -1%, 0);
-  }
-  to {
-    transform: rotate(6deg) scale(1.15) translate3d(3%, 2%, 0);
-  }
-}
-
-@keyframes hero-mesh-b {
-  from {
-    transform: rotate(5deg) scale(1.12) translate3d(2%, 2%, 0);
-  }
-  to {
-    transform: rotate(-8deg) scale(1) translate3d(-3%, -2%, 0);
-  }
-}
-
-/* Las franjas nacen inclinadas y basculan: es la ondulación del trazo. */
-@keyframes hero-mesh-c {
-  from {
-    transform: rotate(-16deg) translate3d(-3%, 2%, 0);
-  }
-  to {
-    transform: rotate(-4deg) translate3d(3%, -2%, 0);
-  }
 }
 
 /**
@@ -137,11 +32,14 @@
     ),
     linear-gradient(
       to bottom,
-      rgb(1 14 29 / 0.6) 0%,
+      rgb(1 14 29 / 0.55) 0%,
       rgb(1 14 29 / 0) 22%,
       rgb(1 14 29 / 0) 68%,
-      rgb(1 14 29 / 0.82) 84%,
-      var(--color-noche-900) 96%
+      rgb(1 14 29 / 0.78) 87%,
+      /* Vuelve a cero en el borde: el oscurecimiento sirve para que el claim y
+         el botón tengan contraste, pero si llegara al final con opacidad
+         marcaría un escalón contra la sección siguiente. */
+      rgb(1 14 29 / 0) 100%
     );
 }
 
@@ -298,12 +196,12 @@
       ),
       linear-gradient(
         to bottom,
-        var(--color-noche-900) 0%,
+        rgb(1 14 29 / 0.6) 0%,
         rgb(1 14 29 / 0.45) 12%,
         rgb(1 14 29 / 0) 28%,
         rgb(1 14 29 / 0) 62%,
-        rgb(1 14 29 / 0.85) 78%,
-        var(--color-noche-900) 92%
+        rgb(1 14 29 / 0.82) 82%,
+        rgb(1 14 29 / 0) 100%
       );
   }
 }

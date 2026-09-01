@@ -33,6 +33,7 @@ src/
 │   ├── images/hero/       recortes 4:5 livianos del corredor del hero
 │   └── logos/
 ├── components/            componentes reutilizables
+│   ├── AmbientBackground/ malla de ondas: el fondo de toda la página
 │   ├── ImageStreamHero/   corredor de fotos en perspectiva 3D
 │   ├── PhraseRotator/     frases que rotan con fundido cruzado
 │   └── WhatsappButton/    CTA a WhatsApp
@@ -58,6 +59,36 @@ src/
 
 # Secciones
 
+## El fondo, que es de todas
+
+`components/AmbientBackground`
+
+Una malla de ondas en el petróleo de marca, montada **una sola vez** en
+`App.jsx` y fija al viewport. Ninguna sección pinta su propio fondo: todas
+scrollean por encima de ésta con fondo transparente.
+
+Esa es la decisión que hace que el sitio se lea como una pieza continua y no
+como bloques apilados — no hay costura posible entre secciones porque no hay dos
+fondos que empalmar.
+
+Son tres capas:
+
+1. **Luz** — cinco degradados radiales en petróleo, con caída corta
+   (`transparent` al 45%) para que se corten entre sí en un frente definido en
+   vez de disolverse en una nube.
+2. **Franjas** — elipses muy achatadas (72% de ancho por 11% de alto) que dan
+   trazos largos en lugar de manchas redondas. Es lo que se lee como líneas.
+3. **Sombra** — degradados en azul noche por encima de las otras dos. No agregan
+   color: recortan el de abajo, y ese borde es la cresta de la onda.
+
+Las tres rotan en sentidos opuestos a 34, 41 y 47 segundos. Los períodos no son
+múltiplos entre sí, así que el patrón combinado tarda muchísimo en repetirse.
+
+**Regla para las secciones nuevas:** no les pongas `background`. Si necesitan
+contraste para su texto, usá un velo local que **vuelva a cero en los bordes**,
+como hace `hero__scrim` — si termina con opacidad, marca un escalón contra la
+sección siguiente.
+
 ## Hero
 
 ![El hero de Unodosmil: el logotipo sobre un corredor de fotos deportivas que avanza hacia el espectador](docs/hero.webp)
@@ -66,7 +97,8 @@ Ocupa la pantalla completa. La idea es que la primera impresión sea el trabajo
 de la agencia y no un texto describiéndolo: las fotos entran desde el fondo y
 pasan al lado del visitante, como si estuviera parado en el medio del juego.
 
-Se compone de cuatro capas, de atrás hacia adelante.
+Se compone de cuatro capas por encima del fondo compartido, de atrás hacia
+adelante.
 
 ### 1. El corredor de fotos
 
@@ -86,11 +118,9 @@ más despacio.
 
 `hero__scrim`
 
-Tres degradados superpuestos. La regla es oscurecer sólo donde hay texto encima y
-dejar la franja de fotos limpia — es lo que la agencia está vendiendo. Una elipse
-detrás de la marca, un asiento abajo para el claim y el botón, y un filo angosto
-en los laterales para que las fotos no se corten a pique contra el borde de la
-ventana.
+Dos degradados superpuestos. La regla es oscurecer sólo donde hay texto encima y
+dejar la franja de fotos limpia — es lo que la agencia está vendiendo. Una elipse detrás de la marca y un asiento abajo para el claim y el botón. Los
+dos extremos vuelven a cero para no cortar la malla del fondo.
 
 ### 3. La marca
 

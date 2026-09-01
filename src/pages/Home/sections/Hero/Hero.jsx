@@ -60,11 +60,6 @@ export function Hero() {
       axis={esMovil ? 46 : 52}
       path={esMovil ? PATH_MOBILE : PATH_DESKTOP}
     >
-      {/* Manchas de luz en petróleo, detrás del corredor. Van primero en el
-          DOM pero lo que las manda al fondo es su z-index, por debajo del que
-          lleva el escenario de las cards. */}
-      <div className="hero__glow" aria-hidden="true" />
-
       {/* Viñeta: oscurece los bordes y el centro para que la marca tenga
           contraste suficiente sobre cualquier foto que pase por detrás. */}
       <div className="hero__scrim" aria-hidden="true" />

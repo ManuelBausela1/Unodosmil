@@ -34,6 +34,12 @@ h4 {
   text-wrap: balance;
 }
 
+/* El contenido va por encima del fondo ambiental, que está en z-index 0. */
+#contenido {
+  position: relative;
+  z-index: 1;
+}
+
 ::selection {
   background-color: var(--accent);
   color: var(--color-hueso);

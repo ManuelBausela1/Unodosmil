@@ -1,0 +1,96 @@
+/**
+ * Malla de ondas en el petróleo de marca, fija al viewport y detrás de todo.
+ *
+ * `position: fixed`: no participa del flujo, no se repite por sección y no se
+ * corta al scrollear. El color de base lo pone el `body`.
+ *
+ * Queda en `z-index: 0` y el contenido en 1, en vez de mandar el fondo a -1:
+ * un z-index negativo lo dejaría por detrás del fondo del `body`, que es
+ * opaco, y no se vería nada.
+ *
+ * Tres capas que giran en sentidos y velocidades distintos. Los períodos
+ * (34s, 41s, 47s) no son múltiplos entre sí, así que el patrón combinado tarda
+ * muchísimo en repetirse y el fondo nunca se lee como un bucle.
+ */
+.ambient {
+  position: fixed;
+  /* Se desborda del viewport para que al rotar y escalar nunca asome un borde. */
+  inset: -35%;
+  z-index: 0;
+  pointer-events: none;
+  /**
+   * Capa de luz. La caída corta —`transparent` al 45% en vez del 70%— es lo que
+   * arma la onda: los degradados se cortan entre sí en un frente definido en
+   * lugar de desvanecerse todos juntos en una nube.
+   */
+  background:
+    radial-gradient(at 18% 16%, rgb(22 162 189 / 0.85) 0px, transparent 45%),
+    radial-gradient(at 80% 10%, rgb(9 107 128 / 0.9) 0px, transparent 43%),
+    radial-gradient(at 96% 54%, rgb(22 162 189 / 0.7) 0px, transparent 42%),
+    radial-gradient(at 30% 88%, rgb(9 107 128 / 0.9) 0px, transparent 45%),
+    radial-gradient(at 62% 66%, rgb(10 125 149 / 0.7) 0px, transparent 40%);
+  animation: ambient-mesh-a 34s var(--ease-in-out) infinite alternate;
+}
+
+/**
+ * Franjas. Son elipses muy achatadas —72% de ancho por 11% de alto— así que en
+ * vez de manchas redondas dan trazos largos. Inclinadas y superpuestas a la
+ * malla, es lo que se lee como líneas de onda cruzando el fondo.
+ */
+.ambient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 72% 11% at 28% 26%, rgb(22 162 189 / 0.6) 0%, transparent 62%),
+    radial-gradient(ellipse 64% 9% at 72% 48%, rgb(22 162 189 / 0.5) 0%, transparent 62%),
+    radial-gradient(ellipse 80% 10% at 44% 74%, rgb(10 125 149 / 0.55) 0%, transparent 62%),
+    radial-gradient(ellipse 56% 8% at 84% 90%, rgb(22 162 189 / 0.42) 0%, transparent 62%);
+  animation: ambient-mesh-c 41s var(--ease-in-out) infinite alternate;
+}
+
+/**
+ * Capa de sombra, encima de las otras dos y girando al revés. No agrega color:
+ * *recorta* el de abajo. Ese borde entre lo que tapa y lo que deja pasar es la
+ * cresta de la onda, y como las capas giran en sentidos opuestos, la cresta
+ * viaja.
+ */
+.ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(at 50% 38%, rgb(1 14 29 / 0.97) 0px, transparent 40%),
+    radial-gradient(at 8% 66%, rgb(1 14 29 / 0.94) 0px, transparent 36%),
+    radial-gradient(at 92% 86%, rgb(1 14 29 / 0.95) 0px, transparent 38%),
+    radial-gradient(at 70% 4%, rgb(1 14 29 / 0.9) 0px, transparent 34%);
+  animation: ambient-mesh-b 47s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes ambient-mesh-a {
+  from {
+    transform: rotate(-7deg) scale(1) translate3d(-2%, -1%, 0);
+  }
+  to {
+    transform: rotate(6deg) scale(1.15) translate3d(3%, 2%, 0);
+  }
+}
+
+@keyframes ambient-mesh-b {
+  from {
+    transform: rotate(5deg) scale(1.12) translate3d(2%, 2%, 0);
+  }
+  to {
+    transform: rotate(-8deg) scale(1) translate3d(-3%, -2%, 0);
+  }
+}
+
+/* Las franjas nacen inclinadas y basculan: es la ondulación del trazo. */
+@keyframes ambient-mesh-c {
+  from {
+    transform: rotate(-16deg) translate3d(-3%, 2%, 0);
+  }
+  to {
+    transform: rotate(-4deg) translate3d(3%, -2%, 0);
+  }
+}
