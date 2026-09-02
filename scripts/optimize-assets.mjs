@@ -4,7 +4,7 @@
  * Toma el material original de `../contenido` (fotos de 5-9 MB cada una) y
  * genera las versiones web que consume el bundle:
  *
- *   src/assets/images/hero/  cards verticales 4:5 del corredor del hero
+ *   src/assets/images/hero/  recortes 4:5 para el hero y el carrusel
  *   src/assets/logos/        logotipos
  *   public/                  favicons
  *
@@ -25,9 +25,9 @@ const OUT = {
 }
 
 /**
- * Cards del hero: 4:5. Cerca de la salida una card ocupa ~750 CSS px de alto,
- * así que 800×1000 la deja nítida sin que el compositor tenga que cargar una
- * textura enorme por cada una de las ~22 cards en pantalla.
+ * Recortes 4:5 para el carrusel. En pantalla llegan a unos 435 px de ancho, así
+ * que 800×1000 las deja nítidas incluso en pantallas de alta densidad sin
+ * inflar el peso de las veintidós que conviven en la pista.
  */
 const HERO = { width: 800, height: 1000, quality: 82 }
 

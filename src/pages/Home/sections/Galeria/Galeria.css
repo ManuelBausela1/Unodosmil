@@ -1,0 +1,28 @@
+.galeria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2rem, 5vh, 3.5rem);
+  padding-block: clamp(3rem, 8vh, 5rem);
+  /* Sin `padding-inline`: el carrusel sangra a lo ancho de la ventana por su
+     cuenta, y un padding acá le rompería ese cálculo. */
+}
+
+/**
+ * En desktop ocupa la pantalla entera, como el hero: las dos secciones se leen
+ * como dos planos de la misma pieza y no como bloques de alturas distintas.
+ *
+ * En móvil se deja crecer con su contenido. Forzar 100vh en una pantalla
+ * angosta apretaría las fotos hasta hacerlas ilegibles, que es justo lo
+ * contrario de lo que busca la sección.
+ */
+@media (min-width: 641px) {
+  .galeria {
+    min-height: 100vh;
+  }
+}
+
+.galeria__frases {
+  padding-inline: var(--gutter);
+}

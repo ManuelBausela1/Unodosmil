@@ -1,0 +1,105 @@
+.carrusel {
+  /**
+   * `100%`, nunca `100vw`. `100vw` mide la ventana **incluyendo** la barra de
+   * scroll vertical, así que en cuanto la página tiene una —siempre— el
+   * carrusel sobresale justo el ancho de esa barra y aparece un scroll
+   * horizontal. Como la sección no lleva padding lateral, `100%` ya llega a los
+   * bordes y no hace falta compensar con márgenes negativos.
+   */
+  width: 100%;
+  overflow: clip;
+  /**
+   * Los extremos se disuelven, así las fotos no aparecen ni desaparecen de
+   * golpe contra el borde de la pantalla.
+   *
+   * `mask-size` y `mask-repeat` explícitos no son decorativos: sin ellos el
+   * navegador dimensiona la máscara contra el área de desbordamiento —los casi
+   * 6000 px de la pista— en vez de contra la caja visible, y los porcentajes
+   * del degradado caen tan lejos que casi todo el carrusel queda enmascarado.
+   */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 3%,
+    #000 97%,
+    transparent 100%
+  );
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+.carrusel__pista {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* -50% es exactamente una copia de la lista: al terminar, la pista vuelve al
+     origen sobre un cuadro idéntico. `linear` mantiene la velocidad pareja; con
+     cualquier easing el bucle latiría al reiniciar. */
+  animation: carrusel-correr var(--duracion) linear infinite;
+}
+
+@keyframes carrusel-correr {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.carrusel__item {
+  flex: 0 0 auto;
+}
+
+.carrusel__imagen {
+  /* La altura manda y el ancho la sigue: así las fotos se ven grandes sin que
+     haga falta abrirlas. */
+  height: clamp(18rem, 54vh, 34rem);
+  width: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  user-select: none;
+  transition: filter var(--duration-base) var(--ease-out);
+}
+
+/**
+ * Al pasar el mouse la pista se frena y todo el carrusel se apaga **menos** la
+ * foto señalada, que queda en su color pleno. `:has()` permite que el
+ * disparador sea la foto y no el contenedor: pasar por el hueco entre dos fotos
+ * no detiene nada.
+ *
+ * El `:not(:hover)` en vez de dos reglas encadenadas es lo que hace que
+ * funcione. Con una regla que oscurece todas y otra que aclara la señalada, la
+ * primera gana por especificidad —lleva el `:has()` adelante— y la foto activa
+ * también se apaga. Excluyéndola desde el selector no hay conflicto que
+ * resolver.
+ */
+@media (hover: hover) {
+  .carrusel__pista:has(.carrusel__item:hover) {
+    animation-play-state: paused;
+  }
+
+  .carrusel__pista:has(.carrusel__item:hover) .carrusel__item:not(:hover) .carrusel__imagen {
+    filter: brightness(0.45) saturate(0.7);
+  }
+}
+
+/**
+ * Sin movimiento automático: la pista se congela y el carrusel pasa a ser una
+ * lista que se recorre a mano. Anular la animación en vez de pausarla la
+ * dejaría clavada en su posición final, con la primera copia fuera de cuadro.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .carrusel {
+    overflow-x: auto;
+  }
+
+  .carrusel__pista {
+    animation-play-state: paused;
+  }
+}

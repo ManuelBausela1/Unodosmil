@@ -21,6 +21,15 @@ body {
   font-size: var(--text-base);
   color: var(--fg);
   background-color: var(--bg);
+  /**
+   * Red de seguridad contra el scroll horizontal. `clip` y no `hidden`: `hidden`
+   * convierte al body en un área scrolleable —y basta con que algo reciba foco
+   * para que el navegador desplace la página de costado—, mientras que `clip`
+   * recorta sin crear contenedor de scroll. Es el único valor que además deja
+   * el eje vertical en `visible`, así el scroll normal de la página sigue
+   * funcionando.
+   */
+  overflow-x: clip;
 }
 
 h1,

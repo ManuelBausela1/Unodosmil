@@ -15,7 +15,7 @@
 .phrase-rotator__frase {
   grid-area: 1 / 1;
   font-family: var(--font-body);
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   line-height: var(--leading-snug);
   color: var(--fg);
   opacity: 0;

@@ -1,7 +1,7 @@
 /**
- * Catálogo de fotos del hero.
+ * Catálogo de fotos de la agencia.
  *
- * Cada entrada es un recorte 4:5 liviano generado por `npm run assets` desde el
+ * Cada entrada es un recorte 4:5 generado por `npm run assets` desde el
  * material original de `../contenido`.
  *
  * El `alt` describe la escena real — es lo que lee un lector de pantalla y lo
@@ -21,7 +21,8 @@ import futbolCabezazo from '../assets/images/hero/a7409224.webp'
 import futbolContraluz from '../assets/images/hero/a7409247.webp'
 import patin from '../assets/images/hero/a7409813.webp'
 
-export const fotosHero = [
+
+export const fotos = [
   {
     src: rugbyBandera,
     alt: 'Hincha con la cara pintada de azul agita la bandera del club desde la tribuna durante un partido de rugby',
@@ -68,4 +69,4 @@ export const fotosHero = [
   },
 ]
 
-export default fotosHero
+export default fotos

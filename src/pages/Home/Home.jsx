@@ -1,4 +1,5 @@
 import { Hero } from './sections/Hero/Hero'
+import { Galeria } from './sections/Galeria/Galeria'
 
 /**
  * Landing. Cada sección vive en `sections/` con su propia hoja de estilos.
@@ -13,6 +14,7 @@ export function Home() {
   return (
     <>
       <Hero />
+      <Galeria />
     </>
   )
 }
