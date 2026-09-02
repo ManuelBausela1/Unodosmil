@@ -1,70 +1,98 @@
 .hero {
+  position: relative;
   /* 100svh, no 100vh: en móvil la barra del navegador no debe recortar el CTA. */
   min-height: 100svh;
-  /* Sin fondo propio: la malla del `AmbientBackground` se ve a través, y así
-     esta sección no se despega de las que vengan abajo. */
+  display: grid;
+  place-items: center;
   isolation: isolate;
+  overflow: clip;
+}
+
+/* ── El video ────────────────────────────────────────────── */
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__video {
+  width: 100%;
+  height: 100%;
+  /* `cover` recorta pero nunca deforma: el encuadre cambia según la pantalla,
+     las proporciones de la imagen no. */
+  object-fit: cover;
+  /* Fundido corto y sin escala: los tres primeros segundos el video se muestra
+     limpio, sin nada encima, y cualquier transformación le restaría nitidez. */
+  animation: hero-video-in 600ms linear both;
+}
+
+@keyframes hero-video-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /**
- * Velo de contraste. La regla es: oscurecer sólo donde hay texto encima, y
- * dejar la franja de fotos limpia — es lo que la agencia está vendiendo.
+ * Capa de contraste, deliberadamente suave: lo justo para que el logotipo
+ * blanco y la frase se lean sobre cualquier fotograma, sin apagar el video.
  *
- * Dos capas, apiladas en el orden en que están escritas:
- * - Radial: una elipse alta, detrás de la marca y nada más.
- * - Vertical: asienta el borde superior e inferior. El tramo del medio —donde
- *   pasa la cinta— queda transparente del todo.
+ * Son dos: un velo parejo bajo y una elipse un poco más densa detrás del texto,
+ * que es donde el contraste tiene que estar garantizado. Concentrarlo ahí en
+ * vez de subir el velo entero deja el resto del cuadro limpio.
  *
- * Los laterales van limpios: la malla de ondas ya no es azul noche plano, así
- * que un velo oscuro en los bordes se veía pegado encima en vez de fundirse.
+ * Aparece a los tres segundos, con la marca. Antes no existe: los primeros tres
+ * segundos el video se ve tal cual es, sin nada que le baje el contraste, y
+ * recién oscurecemos cuando hay texto que sostener.
  */
-.hero__scrim {
+.hero__veil {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   pointer-events: none;
+  animation: hero-veil-in 1.6s var(--ease-out) 3s both;
   background:
     radial-gradient(
-      ellipse 34% 24% at 50% 24%,
-      rgb(1 14 29 / 0.72) 0%,
-      rgb(1 14 29 / 0.34) 55%,
+      ellipse 60% 45% at 50% 48%,
+      rgb(1 14 29 / 0.42) 0%,
+      rgb(1 14 29 / 0.16) 60%,
       rgb(1 14 29 / 0) 100%
     ),
     linear-gradient(
       to bottom,
-      rgb(1 14 29 / 0.55) 0%,
-      rgb(1 14 29 / 0) 22%,
-      rgb(1 14 29 / 0) 68%,
-      rgb(1 14 29 / 0.78) 87%,
-      /* Vuelve a cero en el borde: el oscurecimiento sirve para que el claim y
-         el botón tengan contraste, pero si llegara al final con opacidad
-         marcaría un escalón contra la sección siguiente. */
-      rgb(1 14 29 / 0) 100%
+      rgb(1 14 29 / 0.34) 0%,
+      rgb(1 14 29 / 0.2) 40%,
+      rgb(1 14 29 / 0.3) 100%
     );
 }
 
-.hero__content {
-  position: relative;
-  z-index: var(--z-content);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-8);
-  min-height: 100svh;
-  /* El padding superior es más generoso que el inferior a propósito: baja el
-     bloque de marca hasta apoyarlo contra el borde de arriba de la cinta. */
-  padding: clamp(3.5rem, 10vh, 7rem) var(--gutter) clamp(3rem, 7vh, 5rem);
-  text-align: center;
+@keyframes hero-veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* ── Marca: logotipo + claim ─────────────────────────────── */
+/* ── La marca ────────────────────────────────────────────── */
 
-.hero__marca {
+/**
+ * Todo el bloque entra a los tres segundos. El retraso es del cliente: deja que
+ * el video se lea solo antes de que aparezca la marca.
+ */
+.hero__content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-6);
+  padding: var(--space-16) var(--gutter);
+  text-align: center;
 }
 
 .hero__title {
@@ -77,19 +105,22 @@
 .hero__logo {
   width: clamp(15rem, 42vw, 32rem);
   height: auto;
-  animation: hero-logo-in 1.5s var(--ease-out) both;
+  /* La sombra despega el logotipo del video: sobre un fotograma claro, el
+     blanco sobre blanco se pierde y el velo solo no alcanza. */
+  filter: drop-shadow(0 4px 28px rgb(1 14 29 / 0.6));
+  animation: hero-logo-in 1.6s var(--ease-out) 3s both;
 }
 
 @keyframes hero-logo-in {
   from {
     opacity: 0;
-    transform: scale(1.16) translateY(1.5rem);
-    filter: blur(18px);
+    transform: scale(1.18) translateY(1.5rem);
+    filter: blur(20px) drop-shadow(0 4px 28px rgb(1 14 29 / 0.6));
   }
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
-    filter: blur(0);
+    filter: blur(0) drop-shadow(0 4px 28px rgb(1 14 29 / 0.6));
   }
 }
 
@@ -99,24 +130,12 @@
   justify-content: center;
   gap: 0 0.32em;
   font-family: var(--font-body);
-  /* Es la frase institucional, así que pesa más que un subtítulo cualquiera.
-     El límite lo pone el logotipo que tiene justo encima: sube de tamaño,
-     pero se queda en gris tenue y con la letra espaciada para no disputarle
-     la jerarquía. */
   font-size: var(--text-xl);
   font-weight: 400;
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-snug);
-  color: var(--fg-muted);
-}
-
-/* ── Bloque inferior: frases rotativas + llamada a la acción ── */
-
-.hero__footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
+  color: var(--color-hueso);
+  text-shadow: 0 2px 18px rgb(1 14 29 / 0.7);
 }
 
 /**
@@ -136,7 +155,8 @@
 .hero__claim-word-inner {
   display: inline-block;
   animation: hero-word-reveal 1.1s var(--ease-out) both;
-  animation-delay: calc(650ms + var(--i) * 150ms);
+  /* Arranca cuando el logotipo ya está resuelto. */
+  animation-delay: calc(3.7s + var(--i) * 150ms);
 }
 
 @keyframes hero-word-reveal {
@@ -155,12 +175,8 @@
   }
 }
 
-.hero__frases {
-  animation: hero-fade-up 900ms var(--ease-out) 1.3s both;
-}
-
 .hero__cta {
-  animation: hero-fade-up 900ms var(--ease-out) 1.55s both;
+  animation: hero-fade-up 900ms var(--ease-out) 4.5s both;
 }
 
 @keyframes hero-fade-up {
@@ -178,30 +194,25 @@
 
 @media (max-width: 640px) {
   .hero__content {
-    /* La cinta de vertical es más angosta y queda más abajo que la de desktop,
-       así que el logotipo necesita bajar bastante más para apoyarse en ella. */
-    padding-top: clamp(5rem, 22vh, 12rem);
-    padding-bottom: clamp(2.5rem, 6vh, 4rem);
+    gap: var(--space-4);
+    padding: var(--space-12) var(--gutter);
   }
 
-  /* En vertical la cinta es más alta y angosta: el degradado lateral estorba,
-     y el radial de la marca tiene que subir con ella. */
-  .hero__scrim {
+  /* En vertical el video se recorta mucho de los lados y el fotograma queda
+     más cargado: el velo sube un punto para sostener la lectura. */
+  .hero__veil {
     background:
       radial-gradient(
-        ellipse 64% 18% at 50% 25%,
-        rgb(1 14 29 / 0.7) 0%,
-        rgb(1 14 29 / 0.3) 60%,
+        ellipse 88% 32% at 50% 48%,
+        rgb(1 14 29 / 0.5) 0%,
+        rgb(1 14 29 / 0.2) 65%,
         rgb(1 14 29 / 0) 100%
       ),
       linear-gradient(
         to bottom,
-        rgb(1 14 29 / 0.6) 0%,
-        rgb(1 14 29 / 0.45) 12%,
-        rgb(1 14 29 / 0) 28%,
-        rgb(1 14 29 / 0) 62%,
-        rgb(1 14 29 / 0.82) 82%,
-        rgb(1 14 29 / 0) 100%
+        rgb(1 14 29 / 0.4) 0%,
+        rgb(1 14 29 / 0.26) 40%,
+        rgb(1 14 29 / 0.36) 100%
       );
   }
 }
