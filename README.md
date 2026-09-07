@@ -2,13 +2,13 @@
 
 Sitio de **Unodosmil**, agencia de fotografía y video (Rosario, Argentina).
 
-## Arrancar
+## Observar web en tu máquina
 
+Necesitás Node.js 20 o superior.
 ```bash
+git clone https://github.com/ManuelBausela1/Unodosmil.git
+cd Unodosmil
 npm install
-```
-
-```bash
 npm run dev
 ```
 
@@ -154,7 +154,3 @@ así que no son interactivas: son `<img>` sueltas y no botones. Un control que n
 lleva a ninguna parte sólo ensucia el recorrido del teclado y el de los lectores
 de pantalla.
 
-### Próximas secciones
-
-- Quiénes somos
-- Call to action final
