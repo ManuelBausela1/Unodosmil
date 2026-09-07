@@ -77,7 +77,7 @@ export function Hero() {
           variant="primario"
           mensaje="¡Hola Unodosmil! Vi la web y quiero consultar por una cobertura."
         >
-          Contactame
+          Contactanos
         </WhatsappButton>
       </div>
     </section>
