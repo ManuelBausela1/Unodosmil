@@ -27,11 +27,17 @@ import sharp from 'sharp'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const source = join(root, '..', 'contenido')
 
-const ENTRADA = join(source, 'VIDEOS', 'HORIZONTAL', 'WEB.mp4')
+const ENTRADA = join(source, 'VIDEOS', 'HORIZONTAL', 'web mix.mp4')
 const SALIDA = join(root, 'public', 'media')
 
-/** Segundo del que se saca el póster, ya con la escena armada. */
-const SEGUNDO_POSTER = 2
+/**
+ * Segundo del que se saca el póster. Se elige del arranque a propósito: el
+ * póster es lo que se ve mientras el video carga, así que si coincide con su
+ * primer cuadro el paso a la reproducción no se nota. También es lo único que
+ * reciben quienes pidieron reducir el movimiento, y este cuadro —un corredor
+ * en plena zancada— dice de qué se trata la agencia mejor que un plano fijo.
+ */
+const SEGUNDO_POSTER = 0.4
 
 const mb = (bytes) => (bytes / 1048576).toFixed(1) + ' MB'
 
